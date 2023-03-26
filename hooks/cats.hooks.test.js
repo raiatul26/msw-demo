@@ -6,21 +6,22 @@ import { useGetCatsFact } from 'hooks/cats.hooks.js'
 
 describe('query hook', () => {
     test('successful hook', async () => {
-        const { result } = renderHook(() => useGetCatsFact({}), {
+        const { result } = renderHook(() => useGetCatsFact(), {
             wrapper: createWrapper(),
         })
         await waitFor(() => expect(result.current.isSuccess).toBe(true))
+        console.log(result.current.data)
         expect(result.current.data).toBeDefined()
     })
 
-    xtest('failure hook', async () => {
+    test('failure hook', async () => {
         server.use(
             rest.get('*', (req, res, ctx) => {
-                return res(ctx.status(500))
+                return res(ctx.status(500), ctx.json({}))
             })
         )
 
-        const { result } = renderHook(() => useGetCatsFact({}), {
+        const { result } = renderHook(() => useGetCatsFact(), {
             wrapper: createWrapper(),
         })
         await waitFor(() => result.current.isError)
